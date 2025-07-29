@@ -6,7 +6,7 @@ function Navbar() {
 
         <nav className="navbar navbar-expand-lg bg-white border-bottom">
           <div className="container p-1">
-            <a className="navbar-brand" href="#">
+            <a className="navbar-brand" href="/">
               <img
                 src={logo}  
                 alt="logo"
@@ -30,27 +30,27 @@ function Navbar() {
             >
               <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                 <li className="nav-item">
-                  <a className="nav-link active" aria-current="page" href="#">
+                  <a className="nav-link active" aria-current="page" href="/signup">
                     Signup
                   </a>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link active" href="#">
+                  <a className="nav-link active" href="/about">
                     About
                   </a>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link active" href="#">
+                  <a className="nav-link active" href="/products">
                     Products
                   </a>
                 </li>
                  <li className="nav-item">
-                  <a className="nav-link active" href="#">
+                  <a className="nav-link active" href="/pricing">
                     Pricing
                   </a>
                 </li>
                  <li className="nav-item">
-                  <a className="nav-link active" href="#">
+                  <a className="nav-link active" href="/support">
                     Support
                   </a>
                 </li>

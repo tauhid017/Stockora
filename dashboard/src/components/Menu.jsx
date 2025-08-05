@@ -1,9 +1,11 @@
 import React from "react";
+
 const Menu = () => {
   const handleProfileClick = () => {
-      // Handle profile click functionality
-      console.log("Profile clicked");
-    };
+    // Handle profile click functionality
+    console.log("Profile clicked");
+  };
+
   return (
     <div className="menu-container">
       <img src="logo.png" style={{ width: "50px" }} />

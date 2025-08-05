@@ -298,8 +298,15 @@ hr {
 .profile {
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: flex-start; /* Change from space-evenly to flex-start */
   margin-left: 20px;
+  gap: 8px; /* Add small gap between avatar and username */
+}
+
+.profile .username {
+  font-size: 0.8rem;
+  font-weight: 300;
+  margin: 0; /* Remove default paragraph margin */
 }
 
 .profile .avatar {
@@ -319,10 +326,7 @@ hr {
   margin-right: 8px;
 }
 
-.profile .username {
-  font-size: 0.8rem;
-  font-weight: 300;
-}
+
 
 /* sudo selectors */
 

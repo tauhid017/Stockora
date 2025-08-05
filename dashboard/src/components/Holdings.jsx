@@ -1,8 +1,10 @@
 import React from "react";
+
 const Holdings = () => {
   return (
     <>
       <h3 className="title">Holdings (13)</h3>
+
       <div className="order-table">
         <table>
           <tr>
@@ -17,6 +19,7 @@ const Holdings = () => {
           </tr>
         </table>
       </div>
+
       <div className="row">
         <div className="col">
           <h5>
@@ -38,4 +41,5 @@ const Holdings = () => {
     </>
   );
 };
+
 export default Holdings;

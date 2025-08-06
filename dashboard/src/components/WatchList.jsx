@@ -1,4 +1,5 @@
 import React from "react";
+import {wathlist} from '../data/data'; // Assuming you have a data file with watchlist data
 
 const WatchList = () => {
   return (

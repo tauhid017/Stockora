@@ -1,44 +1,74 @@
-import React from "react";
-import {holdings} from "../data/data"
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+
 const Holdings = () => {
+  const [allholdings, setAllHoldings] = useState([]);
+
+  useEffect(() => {
+    axios.get("http://localhost:3002/allholdings")
+      .then((res) => {
+        console.log(res.data);
+        setAllHoldings(res.data);
+      })
+      .catch((err) => console.error("Error fetching holdings:", err));
+  }, []);
+
   return (
     <>
-      <h3 className="title">Holdings ({holdings.length})</h3>
+      <h3 className="title">Holdings ({allholdings.length})</h3>
 
       <div className="order-table">
         <table>
-          {holdings.map((stock, index)=>{
-            const curvalue = stock.qty*stock.price;
-            const isProfit = curvalue - stock.avg*stock.qty >=0.0;
-            const profClass = isProfit? "profit" : "loss";
-            const dayclass = stock.isLoss? "loss" :"profit";
-            return(
-              <tr  key ={index}>
-            <th>{stock.name}</th>
-            <th>{stock.qty}</th>
-            <th>{stock.avg.toFixed(2)}</th>
-            <th>{stock.price.toFixed(2)}</th>
-            <th>{curvalue.toFixed(2)}</th>
-            <th className={profClass}>{(curvalue - stock.avg*stock.qty).toFixed(2)}</th>
-            <th className={profClass}>{stock.net}</th>
-            <th className={dayclass}>{stock.day}</th>
-          </tr>
-            )
-          })}
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Qty</th>
+              <th>Avg</th>
+              <th>Price</th>
+              <th>Current Value</th>
+              <th>P&L</th>
+              <th>Net</th>
+              <th>Day</th>
+            </tr>
+          </thead>
+          <tbody>
+            {allholdings.map((stock, index) => {
+              const avg = stock.avg || 0;
+              const price = stock.price || 0;
+              const curValue = stock.qty * price;
+              const isProfit = curValue - avg * stock.qty >= 0;
+              const profClass = isProfit ? "profit" : "loss";
+              const dayClass = stock.isLoss ? "loss" : "profit";
 
+              return (
+                <tr key={index}>
+                  <td>{stock.name}</td>
+                  <td>{stock.qty}</td>
+                  <td>{avg.toFixed(2)}</td>
+                  <td>{price.toFixed(2)}</td>
+                  <td>{curValue.toFixed(2)}</td>
+                  <td className={profClass}>
+                    {(curValue - avg * stock.qty).toFixed(2)}
+                  </td>
+                  <td className={profClass}>{stock.net || "0%"}</td>
+                  <td className={dayClass}>{stock.day || "0%"}</td>
+                </tr>
+              );
+            })}
+          </tbody>
         </table>
       </div>
 
       <div className="row">
         <div className="col">
           <h5>
-            29,875.<span>55</span>{" "}
+            29,875.<span>55</span>
           </h5>
           <p>Total investment</p>
         </div>
         <div className="col">
           <h5>
-            31,428.<span>95</span>{" "}
+            31,428.<span>95</span>
           </h5>
           <p>Current value</p>
         </div>

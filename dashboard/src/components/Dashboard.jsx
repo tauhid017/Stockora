@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useContext} from "react";
 import { Route, Routes } from "react-router-dom";
 
 import Apps from "./Apps";
@@ -10,9 +10,10 @@ import Summary from "./Summary";
 import WatchList from "./WatchList";
 
 // Import the context provider
-import { GeneralContextProvider } from "../context/GeneralContext";
+import { GeneralContextProvider } from "./GeneralContext";
 
 const Dashboard = () => {
+  
   return (
     <div className="dashboard-container">
       <GeneralContextProvider>

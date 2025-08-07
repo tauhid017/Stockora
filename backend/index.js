@@ -19,9 +19,11 @@ const sessionOptions = {
     httpOnly: true,
   }
 };
+const frontend = proces.env.VITE_FRONTEND_URL;
+const dashboardurl = process.evn.VITE_DASHBOARD_URL;
 
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:5174'], // Frontend URLs
+  origin: [`${frontend}`, `${dashboardurl}`], // Frontend URLs
   credentials: true // Allow cookies to be sent with requests
 }));
 app.use(bodyParser.json());

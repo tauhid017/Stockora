@@ -19,7 +19,7 @@ const sessionOptions = {
     httpOnly: true,
   }
 };
-const frontend = proces.env.VITE_FRONTEND_URL;
+const frontend = process.env.VITE_FRONTEND_URL;
 const dashboardurl = process.evn.VITE_DASHBOARD_URL;
 
 app.use(cors({

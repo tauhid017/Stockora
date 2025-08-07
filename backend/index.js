@@ -20,7 +20,7 @@ const sessionOptions = {
   }
 };
 const frontend = process.env.VITE_FRONTEND_URL;
-const dashboardurl = process.evn.VITE_DASHBOARD_URL;
+const dashboardurl = process.env.VITE_DASHBOARD_URL;
 
 app.use(cors({
   origin: [`${frontend}`, `${dashboardurl}`], // Frontend URLs

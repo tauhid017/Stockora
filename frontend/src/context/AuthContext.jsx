@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // Create the context
 const AuthContext = createContext();
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const backendUrl = process.env.VITE_BACKEND_URL;
 
 
 // Custom hook to use the auth context
@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
   const register = async (username, email, password) => {
     try {
       setError('');
-      const response = await axios.post('http://localhost:3002/register', {
+      const response = await axios.post(`${backendUrl}/register`, {
         username,
         email,
         password
@@ -59,7 +59,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (username, password) => {
     try {
       setError('');
-      const response = await axios.post('http://localhost:3002/login', {
+      const response = await axios.post(`${backendUrl}/login`, {
         username,
         password
       });
@@ -74,7 +74,7 @@ export const AuthProvider = ({ children }) => {
   // Logout a user
   const logout = async () => {
     try {
-      await axios.get('http://localhost:3002/logout');
+      await axios.get(`${backendUrl}/logout`);
       setCurrentUser(null);
     } catch (error) {
       console.error('Logout error:', error);

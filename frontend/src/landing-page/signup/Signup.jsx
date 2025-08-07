@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import logo from "../../assets/stockora.png";
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import './Signup.css';
+import './Signup.css'
 
 function Signup() {
     const [username, setUsername] = useState('');
@@ -97,8 +98,9 @@ function Signup() {
             </div>
             
             <div className="signup-image-container">
-                <img src="/src/assets/signup.png" alt="Stockora Trading" className="signup-image" />
+                <img src="/src/assets/stockora.png" alt="Stockora Trading" className="signup-image" />
                 <div className="image-overlay">
+                    
                     <h3>Start Your Trading Journey</h3>
                     <p>Join thousands of traders using Stockora for their investment needs</p>
                 </div>

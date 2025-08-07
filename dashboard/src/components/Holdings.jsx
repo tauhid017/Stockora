@@ -1,17 +1,36 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import VerticalGraph from "./VerticalGraph"
 
 const Holdings = () => {
   const [allholdings, setAllHoldings] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:3002/allholdings")
+    axios.get("http://localhost:3002/allholdings", { 
+      withCredentials: true // Add this for authentication
+    })
       .then((res) => {
         console.log(res.data);
         setAllHoldings(res.data);
       })
       .catch((err) => console.error("Error fetching holdings:", err));
   }, []);
+
+  // Format data for the chart
+  const labels = allholdings.map((stock) => stock.name);
+
+  const data = {
+    labels,
+    datasets: [ // This should be an array, not an object
+      {
+        label: 'Stock Price',
+        data: allholdings.map((stock) => stock.price), // Fixed the reference to 'stock'
+        backgroundColor: 'rgba(255, 170, 74, 0.66)',
+        borderColor: 'rgba(255, 170, 74, 1)',
+        borderWidth: 1,
+      },
+    ]
+  };
 
   return (
     <>
@@ -77,6 +96,9 @@ const Holdings = () => {
           <p>P&L</p>
         </div>
       </div>
+      
+      {/* Pass the formatted data to VerticalGraph */}
+      <VerticalGraph data={data} />
     </>
   );
 };

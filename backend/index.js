@@ -13,7 +13,7 @@ const sessionOptions = {
   secret: "mysupersecretkey", // replace with a strong secret or use process.env.SESSION_SECRET
   resave: false,
   saveUninitialized: true,
-  cookies:{
+  cookie:{
     expires: Date.now() + 7* 24* 60* 60* 1000,
     maxAge: 7* 24* 60* 60* 1000,
     httpOnly: true,
@@ -32,6 +32,7 @@ const URL = process.env.MONGO_URL;
 const { HoldingsModel } = require("./model/HoldingsModel.js");
 const { PositionsModel } = require("./model/PositionsModel.js");
 const { OrdersModel } = require("./model/OrdersModel.js");
+
 async function startServer() {
   try {
     await mongoose.connect(URL, {
@@ -53,6 +54,7 @@ async function startServer() {
 
 startServer();
 app.use(session(sessionOptions));
+
 // Route to insert holdings
 // app.get("/addholdings", async (req, res) => {
 //   try {
@@ -216,49 +218,244 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-
-
-app.get("/allholdings", async(req,res)=>{
-    let allholdings = await HoldingsModel.find({});
-    res.json(allholdings);
-
-})
-app.get("/allpositions", async(req,res)=>{
-    let allpositions = await PositionsModel.find({});
-    res.json(allpositions);
-
-})
-app.post('/allorders', async (req, res) => {
-  try {
-    console.log('Received order data:', req.body);
-    
-    if (!req.body.name || !req.body.qty || !req.body.price || !req.body.mode) {
-      console.error('Missing required fields in request body');
-      return res.status(400).json({ error: 'Missing required fields' });
-    }
-    
-    let newOrder = new OrdersModel({
-      name: req.body.name,
-      qty: req.body.qty,
-      price: req.body.price,
-      mode: req.body.mode,
-    });
-    
-    const savedOrder = await newOrder.save();
-    console.log('Order saved successfully:', savedOrder);
-    res.status(201).json({ message: "Order saved successfully", order: savedOrder });
-  } catch (error) {
-    console.error('Error saving order:', error);
-    res.status(500).json({ error: 'Failed to save order' });
+// Middleware to check if user is authenticated
+const isLoggedIn = (req, res, next) => {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ error: "Please log in first" });
   }
-})
+  next();
+};
 
-app.get("/orders",async (req,res)=>{
-  let allorders = await OrdersModel.find({});
-  res.json(allorders);
-})
+// Function to create dummy data for new users
+const createDummyDataForUser = async (username) => {
+    try {
+        // Dummy Holdings Data
+        const dummyHoldings = [
+            {
+                name: "BHARTIARTL",
+                qty: 2,
+                avg: 538.05,
+                price: 541.15,
+                net: "+0.58%",
+                day: "+2.99%",
+                username: username,
+            },
+            {
+                name: "HDFCBANK",
+                qty: 2,
+                avg: 1383.4,
+                price: 1522.35,
+                net: "+10.04%",
+                day: "+0.11%",
+                username: username,
+            },
+            {
+                name: "HINDUNILVR",
+                qty: 1,
+                avg: 2335.85,
+                price: 2417.4,
+                net: "+3.49%",
+                day: "+0.21%",
+                username: username,
+            },
+            {
+                name: "INFY",
+                qty: 1,
+                avg: 1350.5,
+                price: 1555.45,
+                net: "+15.18%",
+                day: "-1.60%",
+                isLoss: true,
+                username: username,
+            },
+            {
+                name: "ITC",
+                qty: 5,
+                avg: 202.0,
+                price: 207.9,
+                net: "+2.92%",
+                day: "+0.80%",
+                username: username,
+            },
+            {
+                name: "KPITTECH",
+                qty: 5,
+                avg: 250.3,
+                price: 266.45,
+                net: "+6.45%",
+                day: "+3.54%",
+                username: username,
+            },
+            {
+                name: "M&M",
+                qty: 2,
+                avg: 809.9,
+                price: 779.8,
+                net: "-3.72%",
+                day: "-0.01%",
+                isLoss: true,
+                username: username,
+            },
+            {
+                name: "RELIANCE",
+                qty: 1,
+                avg: 2193.7,
+                price: 2112.4,
+                net: "-3.71%",
+                day: "+1.44%",
+                username: username,
+            },
+            {
+                name: "SBIN",
+                qty: 4,
+                avg: 324.35,
+                price: 430.2,
+                net: "+32.63%",
+                day: "-0.34%",
+                isLoss: true,
+                username: username,
+            },
+            {
+                name: "SGBMAY29",
+                qty: 2,
+                avg: 4727.0,
+                price: 4719.0,
+                net: "-0.17%",
+                day: "+0.15%",
+                username: username,
+            },
+            {
+                name: "TATAPOWER",
+                qty: 5,
+                avg: 104.2,
+                price: 124.15,
+                net: "+19.15%",
+                day: "-0.24%",
+                isLoss: true,
+                username: username,
+            },
+            {
+                name: "TCS",
+                qty: 1,
+                avg: 3041.7,
+                price: 3194.8,
+                net: "+5.03%",
+                day: "-0.25%",
+                isLoss: true,
+                username: username,
+            },
+            {
+                name: "WIPRO",
+                qty: 4,
+                avg: 489.3,
+                price: 577.75,
+                net: "+18.08%",
+                day: "+0.32%",
+                username: username,
+            },
+        ];
 
-// User registration route
+        // Dummy Positions Data
+        const dummyPositions = [
+            {
+                product: "CNC",
+                name: "EVEREADY",
+                qty: 2,
+                avg: 316.27,
+                price: 312.35,
+                net: "+0.58%",
+                day: "-1.24%",
+                isLoss: true,
+                username: username,
+            },
+            {
+                product: "CNC",
+                name: "JUBLFOOD",
+                qty: 1,
+                avg: 3124.75,
+                price: 3082.65,
+                net: "+10.04%",
+                day: "-1.35%",
+                isLoss: true,
+                username: username,
+            },
+        ];
+
+        // Create dummy holdings
+        await HoldingsModel.insertMany(dummyHoldings);
+        console.log(`Created dummy holdings for user: ${username}`);
+
+        // Create dummy positions
+        await PositionsModel.insertMany(dummyPositions);
+        console.log(`Created dummy positions for user: ${username}`);
+
+    } catch (error) {
+        console.error(`Error creating dummy data for user ${username}:`, error);
+    }
+};
+
+// Updated routes with user-based filtering
+app.get("/allholdings", isLoggedIn, async(req, res) => {
+    try {
+        const username = req.user.username;
+        let allholdings = await HoldingsModel.find({ username });
+        res.json(allholdings);
+    } catch (error) {
+        console.error("Error fetching holdings:", error);
+        res.status(500).json({ error: "Failed to fetch holdings" });
+    }
+});
+
+app.get("/allpositions", isLoggedIn, async(req, res) => {
+    try {
+        const username = req.user.username;
+        let allpositions = await PositionsModel.find({ username });
+        res.json(allpositions);
+    } catch (error) {
+        console.error("Error fetching positions:", error);
+        res.status(500).json({ error: "Failed to fetch positions" });
+    }
+});
+
+// Updated order creation to include username
+app.post('/allorders', isLoggedIn, async (req, res) => {
+    try {
+        console.log('Received order data:', req.body);
+        
+        if (!req.body.name || !req.body.qty || !req.body.price || !req.body.mode) {
+            console.error('Missing required fields in request body');
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+        
+        let newOrder = new OrdersModel({
+            name: req.body.name,
+            qty: req.body.qty,
+            price: req.body.price,
+            mode: req.body.mode,
+            username: req.user.username // Add username to the order
+        });
+        
+        const savedOrder = await newOrder.save();
+        console.log('Order saved successfully:', savedOrder);
+        res.status(201).json({ message: "Order saved successfully", order: savedOrder });
+    } catch (error) {
+        console.error('Error saving order:', error);
+        res.status(500).json({ error: 'Failed to save order' });
+    }
+});
+
+app.get("/orders", isLoggedIn, async (req, res) => {
+    try {
+        const username = req.user.username;
+        let allorders = await OrdersModel.find({ username });
+        res.json(allorders);
+    } catch (error) {
+        console.error("Error fetching orders:", error);
+        res.status(500).json({ error: "Failed to fetch orders" });
+    }
+});
+
+// User registration route - updated to create dummy data
 app.post("/register", async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -272,13 +469,16 @@ app.post("/register", async (req, res) => {
     const newUser = new User({ email, username });
     const registeredUser = await User.register(newUser, password);
     
+    // Create dummy data for the new user
+    await createDummyDataForUser(username);
+    
     // Auto-login after registration
     req.login(registeredUser, (err) => {
       if (err) {
         return res.status(500).json({ error: "Error during login after registration" });
       }
       return res.status(201).json({ 
-        message: "Registration successful", 
+        message: "Registration successful with dummy data created", 
         user: { id: registeredUser._id, username: registeredUser.username, email: registeredUser.email }
       });
     });

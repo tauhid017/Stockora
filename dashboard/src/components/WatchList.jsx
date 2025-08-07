@@ -1,4 +1,4 @@
-import React, {useState,useContext} from "react";
+import React, {useState} from "react";
 import {watchlist} from '../data/data';
 import {Tooltip, Grow} from "@mui/material";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -6,10 +6,8 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import BarChartOutlined from '@mui/icons-material/BarChartOutlined';
 import MoreHoriz from '@mui/icons-material/MoreHoriz';
 import Button from '@mui/material/Button';
-import GeneralContext from "./GeneralContext";
 
 const WatchList = () => {
-  
   return (
     <div className="watchlist-container">
       <div className="search-container">
@@ -67,74 +65,57 @@ const WatchListItem = ({stock}) => {
 }
 
 const WatchListAction =({uid})=>{
-  const generalContext = useContext(GeneralContext);
-  
-  const handleBuyClick = () => {
-    generalContext.openBuyWindow(uid);
-  };
-
-  const handleSellClick = () => {
-    generalContext.openSellWindow(uid);
-  };
-
   return(
     <span>
       <Tooltip 
-        title="Buy (B)"
-        placement="top"
-        arrow 
-        TransitionComponent={Grow}
-      >
-        <Button 
-          className="buy" 
-          style={{ 
-            backgroundColor:"#4184f3",
-            color: 'white'
-          }}
-          onClick={handleBuyClick}
-        >
-          Buy
-        </Button>
+      title="Buy (B)"
+      placement="top"
+      arrow 
+      TransitionComponent={Grow}>
+      <Button className="buy" style={{ backgroundColor:"#4184f3",
+         color: 'white'
+      }}>
+  Buy
+</Button>
+
       </Tooltip>
       &nbsp;
       <Tooltip 
-        title="Sell (S)"
-        placement="top"
-        arrow 
-        TransitionComponent={Grow}
-      >
+      title="Sell (S)"
+      placement="top"
+      arrow 
+      TransitionComponent={Grow}>
         <Button 
-          className="sell" 
-          style={{ 
-            backgroundColor: "#ff5722", 
-            color: 'white' 
-          }}
-          onClick={handleSellClick}
-        >
-          Sell
-        </Button>
+  className="sell" 
+  style={{ 
+    backgroundColor: "#ff5722", 
+    color: 'white' 
+  }}
+>
+  Sell
+</Button>
       </Tooltip>
       &nbsp;
       <Tooltip 
-        title="Analytics (A)"
-        placement="top"
-        arrow 
-        TransitionComponent={Grow}
-      >
+      title="Analytics (A)"
+      placement="top"
+      arrow 
+      TransitionComponent={Grow}>
         <button className="action">
           <BarChartOutlined className="icon"/>
         </button>
+       
       </Tooltip>
       &nbsp;
       <Tooltip 
-        title="More (M)"
-        placement="top"
-        arrow 
-        TransitionComponent={Grow}
-      >
+      title="More (M)"
+      placement="top"
+      arrow 
+      TransitionComponent={Grow}>
         <button className="action">
           <MoreHoriz className="icon"/>
         </button>
+       
       </Tooltip>
     </span>
   )

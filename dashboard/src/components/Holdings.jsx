@@ -33,27 +33,22 @@ const Holdings = () => {
           </thead>
           <tbody>
             {allholdings.map((stock, index) => {
-              // Check if required properties exist and are numbers
-              const price = stock.price ?? 0;
-              const qty = stock.qty ?? 0;
-              const avg = stock.avg ?? 0;
-              
-              const curValue = price * qty;
-              const totalCost = avg * qty;
-              const pnl = curValue - totalCost;
-              const isProfit = pnl >= 0;
+              const avg = stock.avg || 0;
+              const price = stock.price || 0;
+              const curValue = stock.qty * price;
+              const isProfit = curValue - avg * stock.qty >= 0;
               const profClass = isProfit ? "profit" : "loss";
               const dayClass = stock.isLoss ? "loss" : "profit";
 
               return (
                 <tr key={index}>
-                  <td>{stock.name || "N/A"}</td>
-                  <td>{qty}</td>
+                  <td>{stock.name}</td>
+                  <td>{stock.qty}</td>
                   <td>{avg.toFixed(2)}</td>
                   <td>{price.toFixed(2)}</td>
                   <td>{curValue.toFixed(2)}</td>
                   <td className={profClass}>
-                    {pnl.toFixed(2)}
+                    {(curValue - avg * stock.qty).toFixed(2)}
                   </td>
                   <td className={profClass}>{stock.net || "0%"}</td>
                   <td className={dayClass}>{stock.day || "0%"}</td>

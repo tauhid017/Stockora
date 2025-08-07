@@ -20,7 +20,7 @@ function Login() {
             setLoading(true);
             await login(username, password);
             // Redirect to the dashboard application (different port)
-            window.location.href = 'http://localhost:5174';
+            window.location.href = 'stockora.netlify.app';
         } catch (err) {
             setError('Failed to log in. Please check your credentials.');
         } finally {

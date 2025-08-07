@@ -7,7 +7,7 @@ const Orders = () => {
   
   useEffect(() => {
     axios
-      .get("http://localhost:3002/orders")
+      .get("https://stockora.onrender.com/orders")
       .then((res) => {
         setallorders(res.data);
       })

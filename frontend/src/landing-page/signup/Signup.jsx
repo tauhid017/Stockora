@@ -28,7 +28,7 @@ function Signup() {
             setLoading(true);
             await register(username, email, password);
             // Redirect to the dashboard application (different port)
-            window.location.href = 'http://localhost:5174';
+            window.location.href = 'stockora.netlify.app';
         } catch (err) {
             setError(err.response?.data?.error || 'Failed to create an account');
         } finally {

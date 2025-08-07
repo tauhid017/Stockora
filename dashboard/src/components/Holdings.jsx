@@ -6,7 +6,7 @@ const Holdings = () => {
   const [allholdings, setAllHoldings] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:3002/allholdings", { 
+    axios.get("https://stockora.onrender.com/allholdings", { 
       withCredentials: true // Add this for authentication
     })
       .then((res) => {

@@ -4,12 +4,31 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./model/Usermodel.js"); 
+const session = require("express-session");
+
+const sessionOptions = {
+  secret: "mysupersecretkey", // replace with a strong secret or use process.env.SESSION_SECRET
+  resave: false,
+  saveUninitialized: true,
+  cookies:{
+    expires: Date.now() + 7* 24* 60* 60* 1000,
+    maxAge: 7* 24* 60* 60* 1000,
+    httpOnly: true,
+  }
+};
+
 app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 const PORT = process.env.PORT || 3002;
 const URL = process.env.MONGO_URL;
 const { HoldingsModel } = require("./model/HoldingsModel.js");
 const { PositionsModel } = require("./model/PositionsModel.js");
+const { OrdersModel } = require("./model/OrdersModel.js");
 async function startServer() {
   try {
     await mongoose.connect(URL, {
@@ -30,7 +49,7 @@ async function startServer() {
 }
 
 startServer();
-
+app.use(session(sessionOptions));
 // Route to insert holdings
 // app.get("/addholdings", async (req, res) => {
 //   try {
@@ -186,6 +205,16 @@ startServer();
 //   }
 // });
 
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+
+
 app.get("/allholdings", async(req,res)=>{
     let allholdings = await HoldingsModel.find({});
     res.json(allholdings);
@@ -194,5 +223,44 @@ app.get("/allholdings", async(req,res)=>{
 app.get("/allpositions", async(req,res)=>{
     let allpositions = await PositionsModel.find({});
     res.json(allpositions);
+
+})
+app.post('/allorders', async (req, res) => {
+  try {
+    console.log('Received order data:', req.body);
+    
+    if (!req.body.name || !req.body.qty || !req.body.price || !req.body.mode) {
+      console.error('Missing required fields in request body');
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+    
+    let newOrder = new OrdersModel({
+      name: req.body.name,
+      qty: req.body.qty,
+      price: req.body.price,
+      mode: req.body.mode,
+    });
+    
+    const savedOrder = await newOrder.save();
+    console.log('Order saved successfully:', savedOrder);
+    res.status(201).json({ message: "Order saved successfully", order: savedOrder });
+  } catch (error) {
+    console.error('Error saving order:', error);
+    res.status(500).json({ error: 'Failed to save order' });
+  }
+})
+
+app.get("/orders",async (req,res)=>{
+  let allorders = await OrdersModel.find({});
+  res.json(allorders);
+})
+
+app.get("/demouser", async (req,res)=>{
+  let fakeUser = new User({
+    email:"student@gmail.com",
+    username:"siudent"
+  })
+  let registeredUser = await User.register(fakeUser,"helloworld");
+  res.send(registeredUser);
 
 })

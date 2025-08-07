@@ -10,7 +10,7 @@ import Summary from "./Summary";
 import WatchList from "./WatchList";
 
 // Import the context provider
-import { GeneralContextProvider } from "../context/GeneralContext";
+import { GeneralContextProvider } from "./GeneralContext";
 
 const Dashboard = () => {
   return (

@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
-        const response = await axios.get('http://localhost:3002/check-auth');
+        const response = await axios.get('https://stockora.onrender.com/check-auth');
         if (response.data.isAuthenticated) {
           setCurrentUser(response.data.user);
         }

@@ -3,6 +3,8 @@ import axios from 'axios';
 
 // Create the context
 const AuthContext = createContext();
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
 
 // Custom hook to use the auth context
 export const useAuth = () => {
@@ -22,7 +24,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
-        const response = await axios.get('https://stockora.onrender.com/check-auth');
+        const response = await axios.get(`${backendUrl}/check-auth`);
         if (response.data.isAuthenticated) {
           setCurrentUser(response.data.user);
         }

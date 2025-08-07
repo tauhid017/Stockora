@@ -3,6 +3,7 @@ import logo from "../../assets/stockora.png";
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import './Signup.css'
+const dashboardurl = import.meta.env.VITE_DASHBOARD_URL;
 
 function Signup() {
     const [username, setUsername] = useState('');
@@ -28,7 +29,7 @@ function Signup() {
             setLoading(true);
             await register(username, email, password);
             // Redirect to the dashboard application (different port)
-            window.location.href = 'stockora.netlify.app';
+            window.location.href = `${dashboardurl}`;
         } catch (err) {
             setError(err.response?.data?.error || 'Failed to create an account');
         } finally {

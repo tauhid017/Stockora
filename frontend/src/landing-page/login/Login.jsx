@@ -4,6 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import './Login.css';
 
 function Login() {
+    const dashboardurl = import.meta.env.VITE_DASHBOARD_URL;
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -20,7 +21,7 @@ function Login() {
             setLoading(true);
             await login(username, password);
             // Redirect to the dashboard application (different port)
-            window.location.href = 'stockora.netlify.app';
+            window.location.href = `${dashboardurl}`;
         } catch (err) {
             setError('Failed to log in. Please check your credentials.');
         } finally {

@@ -20,7 +20,10 @@ const sessionOptions = {
   }
 };
 
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:5173', 'http://localhost:5174'], // Frontend URLs
+  credentials: true // Allow cookies to be sent with requests
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -255,12 +258,61 @@ app.get("/orders",async (req,res)=>{
   res.json(allorders);
 })
 
-app.get("/demouser", async (req,res)=>{
-  let fakeUser = new User({
-    email:"student@gmail.com",
-    username:"siudent"
-  })
-  let registeredUser = await User.register(fakeUser,"helloworld");
-  res.send(registeredUser);
+// User registration route
+app.post("/register", async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
+    
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ error: "Email already registered" });
+    }
+    
+    const newUser = new User({ email, username });
+    const registeredUser = await User.register(newUser, password);
+    
+    // Auto-login after registration
+    req.login(registeredUser, (err) => {
+      if (err) {
+        return res.status(500).json({ error: "Error during login after registration" });
+      }
+      return res.status(201).json({ 
+        message: "Registration successful", 
+        user: { id: registeredUser._id, username: registeredUser.username, email: registeredUser.email }
+      });
+    });
+  } catch (error) {
+    console.error("Registration error:", error);
+    res.status(500).json({ error: "Registration failed" });
+  }
+});
 
-})
+// User login route
+app.post("/login", passport.authenticate("local"), (req, res) => {
+  res.json({ 
+    message: "Login successful", 
+    user: { id: req.user._id, username: req.user.username, email: req.user.email }
+  });
+});
+
+// User logout route
+app.get("/logout", (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      return res.status(500).json({ error: "Error during logout" });
+    }
+    res.json({ message: "Logout successful" });
+  });
+});
+
+// Check if user is authenticated
+app.get("/check-auth", (req, res) => {
+  if (req.isAuthenticated()) {
+    return res.json({ 
+      isAuthenticated: true, 
+      user: { id: req.user._id, username: req.user.username, email: req.user.email }
+    });
+  }
+  res.json({ isAuthenticated: false });
+});

@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useAuth } from './AuthContext';
 
 // Create the context
 const GeneralContext = createContext();
@@ -7,6 +8,19 @@ const GeneralContext = createContext();
 export const GeneralContextProvider = ({ children }) => {
   const [watchlist, setWatchlist] = useState([]);
   const [user, setUser] = useState({ name: 'User', id: 'USERID' });
+  
+  // Get current user from AuthContext
+  const { currentUser } = useAuth();
+  
+  // Update user information when currentUser changes
+  useEffect(() => {
+    if (currentUser) {
+      setUser({
+        name: currentUser.username,
+        id: currentUser._id || currentUser.username
+      });
+    }
+  }, [currentUser]);
   
   const value = {
     watchlist,

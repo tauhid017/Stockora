@@ -1,21 +1,34 @@
-import React,{useState} from "react";
-import { Link } from "react-router-dom";
-import logo from "../assets/logo.png"; // Assuming you have a logo image in assets
-const Menu = () => {
-  // Add the missing handleProfileClick function
-  
-  const [selectedMenu , setselectedMenu] = useState(0);
-  const [ismenuOpen, setmenuOpen] =useState(false);
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import logo from "../assets/logo.png";
+import { useAuth } from "../context/AuthContext";
 
-  const handelemenuclick=(index)=>{
-    setselectedMenu(index);
-  }
-  const handleProfileClick = () => {
-    setmenuOpen(!ismenuOpen);
-    
+const Menu = () => {
+  const { currentUser, loading, logout } = useAuth();
+  const navigate = useNavigate();
+  const [selectedMenu, setSelectedMenu] = useState(0);
+  const [isMenuOpen, setMenuOpen] = useState(false);
+
+  const handleMenuClick = (index) => {
+    setSelectedMenu(index);
   };
-  const menuclass = "menu";
-  const activemenuclass = "menu selected";
+
+  const handleProfileClick = () => {
+    setMenuOpen(!isMenuOpen);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      // Redirect back to the frontend application's login page
+      window.location.href = 'http://localhost:5173/login';
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
+  const menuClass = "menu";
+  const activeMenuClass = "menu selected";
 
   return (
     <div className="menu-container">
@@ -23,40 +36,49 @@ const Menu = () => {
       <div className="menus mt-4">
         <ul>
           <li>
-            <Link style={{textDecoration:"none"}} to='/' onClick={()=>handelemenuclick(0)}>
-            <p className={selectedMenu===0? activemenuclass :menuclass}>Dashboard</p>
+            <Link style={{textDecoration:"none"}} to='/' onClick={()=>handleMenuClick(0)}>
+            <p className={selectedMenu===0? activeMenuClass : menuClass}>Dashboard</p>
             </Link>
           </li>
           <li>
-           <Link style={{textDecoration:"none"}} to='/orders' onClick={()=>handelemenuclick(1)}> 
-           <p className={selectedMenu===1? activemenuclass :menuclass}>Orders</p>
+           <Link style={{textDecoration:"none"}} to='/orders' onClick={()=>handleMenuClick(1)}> 
+           <p className={selectedMenu===1? activeMenuClass : menuClass}>Orders</p>
            </Link>
           </li>
           <li>
-            <Link style={{textDecoration:"none"}} to='/holdings' onClick={()=>handelemenuclick(2)}>
-            <p className={selectedMenu===2? activemenuclass :menuclass}>Holdings</p>
+            <Link style={{textDecoration:"none"}} to='/holdings' onClick={()=>handleMenuClick(2)}>
+            <p className={selectedMenu===2? activeMenuClass : menuClass}>Holdings</p>
             </Link>
           </li>
           <li>
-            <Link style={{textDecoration:"none"}} to='/positions' onClick={()=>handelemenuclick(3)}>
-            <p className={selectedMenu===3? activemenuclass :menuclass}>Positions</p>
+            <Link style={{textDecoration:"none"}} to='/positions' onClick={()=>handleMenuClick(3)}>
+            <p className={selectedMenu===3? activeMenuClass : menuClass}>Positions</p>
             </Link>
           </li>
           <li>
-            <Link style={{textDecoration:"none"}} to='/funds' onClick={()=>handelemenuclick(4)}>
-            <p className={selectedMenu===4? activemenuclass :menuclass}>Funds</p>
+            <Link style={{textDecoration:"none"}} to='/funds' onClick={()=>handleMenuClick(4)}>
+            <p className={selectedMenu===4? activeMenuClass : menuClass}>Funds</p>
             </Link>
           </li>
           <li>
-            <Link style={{textDecoration:"none"}} to='/apps' onClick={()=>handelemenuclick(5)}>
-            <p className={selectedMenu===5? activemenuclass :menuclass}>Apps</p>
+            <Link style={{textDecoration:"none"}} to='/apps' onClick={()=>handleMenuClick(5)}>
+            <p className={selectedMenu===5? activeMenuClass : menuClass}>Apps</p>
             </Link>
           </li>
         </ul>
         <hr />
-        <div className="profile mb-4" onClick={handleProfileClick}>
-          <div className="avatar">ZU</div>
-          <p className="username">USERID</p>
+        <div className="profile mb-4">
+          <div className="profile-info" onClick={handleProfileClick}>
+            <div className="avatar">
+              {loading ? '...' : (currentUser ? currentUser.username.substring(0, 2).toUpperCase() : 'GU')}
+            </div>
+            <p className="username">
+              {loading ? 'Loading...' : (currentUser ? currentUser.username : 'Guest')}
+            </p>
+          </div>
+          <button className="logout-btn" onClick={handleLogout} disabled={loading}>
+            {loading ? 'Please wait...' : 'Logout'}
+          </button>
         </div>
       </div>
     </div>

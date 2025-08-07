@@ -3,7 +3,7 @@ import Hero from "./Hero";
 import product from "../../assets/product.png";
 import LeftImage from "./LeftImage";
 import playstore from "../../assets/Playstor.svg";
-import appstore from "../../assets/Appstore.svg";
+import appstore from "../../assets/appstore.svg";
 import RightImage from "./RightImage";
 import console from "../../assets/console.png";
 import coin from "../../assets/coin.png";

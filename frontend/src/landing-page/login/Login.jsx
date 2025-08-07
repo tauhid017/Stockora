@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import './Login.css';
-
+const dashboardurl = import.meta.env.VITE_DASHBOARD_URL;
 function Login() {
-    const dashboardurl = import.meta.env.VITE_DASHBOARD_URL;
+    
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');

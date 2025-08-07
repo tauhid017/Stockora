@@ -13,7 +13,7 @@ const BuyActionWindow = ({ uid }) => {
   const generalContext = useContext(GeneralContext);
 
   const handleBuyClick = () => {
-    axios.post("https://stockora.onrender.com/allorders", {
+    axios.post("https://stockora-1.onrender.com/allorders", {
       name: uid,
       qty: stockQuantity,
       price: stockPrice,

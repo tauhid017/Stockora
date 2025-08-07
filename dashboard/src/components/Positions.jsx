@@ -3,7 +3,7 @@ import axios from "axios";
 const Positions = () => {
   const[allpositon,setallpositions]=useState([]);
   useEffect(()=>{
-    axios.get("https://stockora.onrender.com/allpositions").then((res)=>{
+    axios.get("https://stockora-1.onrender.com/allpositions").then((res)=>{
       setallpositions(res.data);
     })
   },[])

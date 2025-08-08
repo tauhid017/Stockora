@@ -29,6 +29,7 @@ const allowedOrigins = [
   frontend,
   dashboardurl,
   'https://stockora-t1rz.vercel.app', // Your Vercel frontend URL
+  'https://stockora-9xwj.vercel.app', // Your dashboard URL
   'https://stockora.vercel.app', // Alternative Vercel URL
   'https://stockora-frontend.vercel.app', // Another possible Vercel URL
   'http://localhost:5173', // Local development

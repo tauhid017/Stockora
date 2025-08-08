@@ -13,7 +13,7 @@ const SellActionWindow = ({ uid }) => {
   const generalContext = useContext(GeneralContext);
 
   const handleSellClick = () => {
-    axios.post("https://stockora-1.onrender.com/allorders", {
+    axios.post(`${import.meta.env.VITE_BACKEND_URL || 'https://stockora.onrender.com'}/allorders`, {
       name: uid,
       qty: stockQuantity,
       price: stockPrice,

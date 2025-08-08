@@ -7,7 +7,7 @@ const Orders = () => {
   
   useEffect(() => {
     axios
-      .get("https://stockora-1.onrender.com/orders")
+      .get(`${import.meta.env.VITE_BACKEND_URL || 'https://stockora.onrender.com'}/orders`)
       .then((res) => {
         setallorders(res.data);
       })

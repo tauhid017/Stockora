@@ -17,14 +17,57 @@ const sessionOptions = {
     expires: Date.now() + 7* 24* 60* 60* 1000,
     maxAge: 7* 24* 60* 60* 1000,
     httpOnly: true,
+    secure: process.env.NODE_ENV === 'production', // Only use secure cookies in production
+    sameSite: 'none' // Required for cross-origin requests
   }
 };
 const frontend = process.env.VITE_FRONTEND_URL;
 const dashboardurl = process.env.VITE_DASHBOARD_URL;
 
+// CORS configuration with fallback for development and production
+const allowedOrigins = [
+  frontend,
+  dashboardurl,
+  'https://stockora-t1rz.vercel.app', // Your Vercel frontend URL
+  'https://stockora.vercel.app', // Alternative Vercel URL
+  'https://stockora-frontend.vercel.app', // Another possible Vercel URL
+  'http://localhost:5173', // Local development
+  'http://localhost:3000', // Alternative local development
+  'http://localhost:3001', // Another local development port
+  'https://stockora-dashboard.vercel.app', // Dashboard URL
+  'https://stockora-dashboard-t1rz.vercel.app', // Dashboard URL with subdomain
+  // Add any additional Vercel domains that might be used
+  'https://stockora-frontend-t1rz.vercel.app',
+  'https://stockora-dashboard-frontend.vercel.app',
+];
+
+// Filter out undefined values
+const validOrigins = allowedOrigins.filter(origin => origin);
+
 app.use(cors({
-  origin: [`${frontend}`, `${dashboardurl}`], // Frontend URLs
-  credentials: true // Allow cookies to be sent with requests
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) {
+      console.log('CORS: No origin provided, allowing request');
+      return callback(null, true);
+    }
+    
+    console.log('CORS request from origin:', origin);
+    console.log('Allowed origins:', validOrigins);
+    console.log('Environment variables - frontend:', frontend, 'dashboardurl:', dashboardurl);
+    
+    if (validOrigins.indexOf(origin) !== -1) {
+      console.log('CORS allowed for origin:', origin);
+      callback(null, true);
+    } else {
+      console.log('CORS blocked origin:', origin);
+      console.log('This origin is not in the allowed list. Please add it to allowedOrigins array.');
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true, // Allow cookies to be sent with requests
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Origin', 'Accept']
 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -505,6 +548,29 @@ app.get("/logout", (req, res) => {
       return res.status(500).json({ error: "Error during logout" });
     }
     res.json({ message: "Logout successful" });
+  });
+});
+
+// Test route to check CORS
+app.get("/test-cors", (req, res) => {
+  res.json({ 
+    message: "CORS test successful",
+    timestamp: new Date().toISOString(),
+    origin: req.headers.origin,
+    allowedOrigins: validOrigins
+  });
+});
+
+// Debug route to check server status
+app.get("/health", (req, res) => {
+  res.json({ 
+    status: "Server is running",
+    timestamp: new Date().toISOString(),
+    cors: {
+      allowedOrigins: validOrigins,
+      frontend: frontend,
+      dashboardurl: dashboardurl
+    }
   });
 });
 

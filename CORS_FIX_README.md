@@ -25,6 +25,7 @@ You're getting CORS errors because your frontend (hosted on Vercel) is trying to
 ### For Frontend (.env file in frontend directory):
 ```
 VITE_BACKEND_URL=https://stockora.onrender.com
+VITE_DASHBOARD_URL=https://stockora-9xwj.vercel.app
 VITE_FRONTEND_URL=https://stockora-t1rz.vercel.app
 ```
 

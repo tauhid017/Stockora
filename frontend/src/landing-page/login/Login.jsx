@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import './Login.css';
-const dashboardurl = import.meta.env.VITE_DASHBOARD_URL;
+const dashboardurl = import.meta.env.VITE_DASHBOARD_URL || 'https://stockora-9xwj.vercel.app';
 function Login() {
     
     const [username, setUsername] = useState('');

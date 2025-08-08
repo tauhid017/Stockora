@@ -22,6 +22,11 @@ async function testBackend() {
     const authResponse = await axios.get(`${baseUrl}/check-auth`);
     console.log('Auth check successful:', authResponse.data);
     
+    // Test debug users endpoint
+    console.log('\n4. Testing /debug/users endpoint...');
+    const usersResponse = await axios.get(`${baseUrl}/debug/users`);
+    console.log('Users check successful:', usersResponse.data);
+    
   } catch (error) {
     console.error('Error testing backend:', error.response?.data || error.message);
   }

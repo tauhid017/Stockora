@@ -534,11 +534,37 @@ app.post("/register", async (req, res) => {
 });
 
 // User login route
-app.post("/login", passport.authenticate("local"), (req, res) => {
-  res.json({ 
-    message: "Login successful", 
-    user: { id: req.user._id, username: req.user.username, email: req.user.email }
+app.post("/login", (req, res, next) => {
+  console.log('Login attempt received:', {
+    username: req.body.username,
+    email: req.body.email,
+    hasPassword: !!req.body.password
   });
+  
+  passport.authenticate("local", (err, user, info) => {
+    if (err) {
+      console.error('Passport authentication error:', err);
+      return res.status(500).json({ error: "Authentication error" });
+    }
+    
+    if (!user) {
+      console.log('Login failed - no user found or invalid credentials');
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+    
+    req.logIn(user, (err) => {
+      if (err) {
+        console.error('Login error:', err);
+        return res.status(500).json({ error: "Login error" });
+      }
+      
+      console.log('Login successful for user:', user.username);
+      res.json({ 
+        message: "Login successful", 
+        user: { id: user._id, username: user.username, email: user.email }
+      });
+    });
+  })(req, res, next);
 });
 
 // User logout route
@@ -572,6 +598,20 @@ app.get("/health", (req, res) => {
       dashboardurl: dashboardurl
     }
   });
+});
+
+// Debug route to check users in database
+app.get("/debug/users", async (req, res) => {
+  try {
+    const users = await User.find({}, { username: 1, email: 1, _id: 1 });
+    res.json({ 
+      userCount: users.length,
+      users: users.map(u => ({ id: u._id, username: u.username, email: u.email }))
+    });
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ error: "Failed to fetch users" });
+  }
 });
 
 // Check if user is authenticated

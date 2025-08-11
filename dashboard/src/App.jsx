@@ -5,6 +5,7 @@ import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './components/Home.jsx';
 import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute.jsx';
 
 
 function App() {
@@ -13,9 +14,9 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/*" element={
-       
+            <ProtectedRoute>
               <Home />
-
+            </ProtectedRoute>
           } />
         </Routes>
       </BrowserRouter>

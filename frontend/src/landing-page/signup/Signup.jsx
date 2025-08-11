@@ -20,6 +20,14 @@ function Signup() {
         e.preventDefault();
         
         // Form validation
+        if (!username.trim() || !email.trim() || !password.trim()) {
+            return setError('Please fill in all fields');
+        }
+        
+        if (password.length < 6) {
+            return setError('Password must be at least 6 characters long');
+        }
+        
         if (password !== confirmPassword) {
             return setError('Passwords do not match');
         }
@@ -27,9 +35,15 @@ function Signup() {
         try {
             setError('');
             setLoading(true);
-            await register(username, email, password);
-            // Redirect to the dashboard application (different port)
-            window.location.href = `${dashboardurl}`;
+            const response = await register(username, email, password);
+            
+            // Only redirect after successful registration
+            if (response && response.user) {
+                // Redirect to the dashboard application
+                window.location.href = `${dashboardurl}`;
+            } else {
+                setError('Registration failed. Please try again.');
+            }
         } catch (err) {
             setError(err.response?.data?.error || 'Failed to create an account');
         } finally {

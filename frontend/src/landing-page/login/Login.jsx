@@ -16,14 +16,26 @@ function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         
+        // Basic validation
+        if (!username.trim() || !password.trim()) {
+            setError('Please fill in all fields');
+            return;
+        }
+        
         try {
             setError('');
             setLoading(true);
-            await login(username, password);
-            // Redirect to the dashboard application (different port)
-            window.location.href = `${dashboardurl}`;
+            const response = await login(username, password);
+            
+            // Only redirect after successful login
+            if (response && response.user) {
+                // Redirect to the dashboard application
+                window.location.href = `${dashboardurl}`;
+            } else {
+                setError('Login failed. Please try again.');
+            }
         } catch (err) {
-            setError('Failed to log in. Please check your credentials.');
+            setError(err.response?.data?.error || 'Failed to log in. Please check your credentials.');
         } finally {
             setLoading(false);
         }

@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // Create the context
 const AuthContext = createContext();
-const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://stockora.onrender.com';
+const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://stockora-1.onrender.com';
 
 // Custom hook to use the auth context
 export const useAuth = () => {

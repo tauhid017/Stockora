@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { useAuth } from "../context/AuthContext";
 
+const frontendUrl = import.meta.env.VITE_FRONTEND_URL || 'http://localhost:5173';
+
 const Menu = () => {
   const { currentUser, loading, logout } = useAuth();
   const navigate = useNavigate();
@@ -21,9 +23,11 @@ const Menu = () => {
     try {
       await logout();
       // Redirect back to the frontend application's login page
-      window.location.href = 'http://localhost:5173/login';
+      window.location.href = `${frontendUrl}/login`;
     } catch (error) {
       console.error('Logout failed:', error);
+      // Still redirect even if logout fails on backend
+      window.location.href = `${frontendUrl}/login`;
     }
   };
 

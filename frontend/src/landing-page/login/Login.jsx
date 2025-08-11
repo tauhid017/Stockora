@@ -31,8 +31,11 @@ function Login() {
             
             // Only redirect after successful login
             if (response && response.user) {
-                // Redirect to the dashboard application
-                window.location.href = `${dashboardurl}`;
+                console.log('Login successful, redirecting to dashboard...');
+                // Small delay to ensure state is updated
+                setTimeout(() => {
+                    window.location.href = `${dashboardurl}`;
+                }, 500);
             } else {
                 setError('Login failed. Please try again.');
             }

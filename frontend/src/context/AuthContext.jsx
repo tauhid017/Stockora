@@ -50,7 +50,10 @@ export const AuthProvider = ({ children }) => {
         password
       });
       console.log('Registration successful:', response.data);
+      
+      // Set the current user immediately after successful registration
       setCurrentUser(response.data.user);
+      
       return response.data;
     } catch (error) {
       console.error('Registration error:', error.response?.data || error.message);
@@ -69,7 +72,10 @@ export const AuthProvider = ({ children }) => {
         password
       });
       console.log('Login successful:', response.data);
+      
+      // Set the current user immediately after successful login
       setCurrentUser(response.data.user);
+      
       return response.data;
     } catch (error) {
       console.error('Login error:', error.response?.data || error.message);

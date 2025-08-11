@@ -35,17 +35,26 @@ function Signup() {
         try {
             setError('');
             setLoading(true);
+            console.log('Attempting registration...');
             const response = await register(username, email, password);
             
             // Only redirect after successful registration
             if (response && response.user) {
-                // Redirect to the dashboard application
-                window.location.href = `${dashboardurl}`;
+                console.log('Registration successful, redirecting to dashboard...');
+                // Small delay to ensure state is updated
+                setTimeout(() => {
+                    window.location.href = `${dashboardurl}`;
+                }, 500);
             } else {
                 setError('Registration failed. Please try again.');
             }
         } catch (err) {
-            setError(err.response?.data?.error || 'Failed to create an account');
+            console.error('Registration failed:', err);
+            const errorMessage = err.response?.data?.error || err.message || 'Failed to create an account';
+            setError(`Registration failed: ${errorMessage}`);
+            
+            // For debugging - don't redirect on error, show the error instead
+            console.log('Registration error details:', err.response?.data);
         } finally {
             setLoading(false);
         }

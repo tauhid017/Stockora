@@ -12,13 +12,13 @@ const session = require("express-session");
 const sessionOptions = {
   secret: "mysupersecretkey", // replace with a strong secret or use process.env.SESSION_SECRET
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false, // Changed to false for better security
   cookie:{
     expires: Date.now() + 7* 24* 60* 60* 1000,
     maxAge: 7* 24* 60* 60* 1000,
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production', // Only use secure cookies in production
-    sameSite: 'none' // Required for cross-origin requests
+    secure: false, // Set to false for localhost development
+    sameSite: 'lax' // Changed from 'none' to 'lax' for localhost
   }
 };
 const frontend = process.env.VITE_FRONTEND_URL;
@@ -33,6 +33,7 @@ const allowedOrigins = [
   'https://stockora.vercel.app', // Alternative Vercel URL
   'https://stockora-frontend.vercel.app', // Another possible Vercel URL
   'http://localhost:5173', // Local development
+  'http://localhost:5174', // Local dashboard
   'http://localhost:3000', // Alternative local development
   'http://localhost:3001', // Another local development port
   'https://stockora-dashboard.vercel.app', // Dashboard URL
@@ -275,6 +276,15 @@ const isLoggedIn = (req, res, next) => {
 // Function to create dummy data for new users
 const createDummyDataForUser = async (username) => {
     try {
+        console.log(`Starting dummy data creation for user: ${username}`);
+        
+        // Check if user already has data
+        const existingHoldings = await HoldingsModel.findOne({ username });
+        if (existingHoldings) {
+            console.log(`User ${username} already has data, skipping dummy data creation`);
+            return;
+        }
+        
         // Dummy Holdings Data
         const dummyHoldings = [
             {
@@ -428,15 +438,18 @@ const createDummyDataForUser = async (username) => {
         ];
 
         // Create dummy holdings
-        await HoldingsModel.insertMany(dummyHoldings);
-        console.log(`Created dummy holdings for user: ${username}`);
+        const createdHoldings = await HoldingsModel.insertMany(dummyHoldings);
+        console.log(`Created ${createdHoldings.length} dummy holdings for user: ${username}`);
 
         // Create dummy positions
-        await PositionsModel.insertMany(dummyPositions);
-        console.log(`Created dummy positions for user: ${username}`);
+        const createdPositions = await PositionsModel.insertMany(dummyPositions);
+        console.log(`Created ${createdPositions.length} dummy positions for user: ${username}`);
 
+        console.log(`Successfully created all dummy data for user: ${username}`);
+        
     } catch (error) {
         console.error(`Error creating dummy data for user ${username}:`, error);
+        throw error; // Re-throw so registration can handle it
     }
 };
 
@@ -506,31 +519,48 @@ app.post("/register", async (req, res) => {
   try {
     const { username, email, password } = req.body;
     
+    console.log('Registration attempt:', { username, email });
+    
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ error: "Email already registered" });
     }
     
+    // Check if username already exists
+    const existingUsername = await User.findOne({ username });
+    if (existingUsername) {
+      return res.status(400).json({ error: "Username already taken" });
+    }
+    
     const newUser = new User({ email, username });
     const registeredUser = await User.register(newUser, password);
     
+    console.log('User registered successfully:', registeredUser.username);
+    
     // Create dummy data for the new user
-    await createDummyDataForUser(username);
+    try {
+      await createDummyDataForUser(username);
+      console.log('Dummy data created successfully for:', username);
+    } catch (dummyError) {
+      console.error('Error creating dummy data (non-critical):', dummyError);
+      // Continue with registration even if dummy data fails
+    }
     
     // Auto-login after registration
     req.login(registeredUser, (err) => {
       if (err) {
+        console.error('Error during auto-login:', err);
         return res.status(500).json({ error: "Error during login after registration" });
       }
       return res.status(201).json({ 
-        message: "Registration successful with dummy data created", 
+        message: "Registration successful", 
         user: { id: registeredUser._id, username: registeredUser.username, email: registeredUser.email }
       });
     });
   } catch (error) {
     console.error("Registration error:", error);
-    res.status(500).json({ error: "Registration failed" });
+    res.status(500).json({ error: "Registration failed: " + error.message });
   }
 });
 
@@ -539,24 +569,25 @@ app.post("/login", (req, res, next) => {
   console.log('Login attempt received:', {
     username: req.body.username,
     email: req.body.email,
-    hasPassword: !!req.body.password
+    hasPassword: !!req.body.password,
+    body: req.body
   });
   
   passport.authenticate("local", (err, user, info) => {
     if (err) {
       console.error('Passport authentication error:', err);
-      return res.status(500).json({ error: "Authentication error" });
+      return res.status(500).json({ error: "Authentication error: " + err.message });
     }
     
     if (!user) {
-      console.log('Login failed - no user found or invalid credentials');
-      return res.status(401).json({ error: "Invalid credentials" });
+      console.log('Login failed - no user found or invalid credentials. Info:', info);
+      return res.status(401).json({ error: "Invalid username or password" });
     }
     
     req.logIn(user, (err) => {
       if (err) {
         console.error('Login error:', err);
-        return res.status(500).json({ error: "Login error" });
+        return res.status(500).json({ error: "Login error: " + err.message });
       }
       
       console.log('Login successful for user:', user.username);

@@ -28,21 +28,11 @@ const dashboardurl = process.env.VITE_DASHBOARD_URL;
 const allowedOrigins = [
   frontend,
   dashboardurl,
-  'https://stockora-n8l5.vercel.app', // Current Vercel frontend/dashboard URL
-  'https://stockora-t1rz.vercel.app', // Your Vercel frontend URL
-  'https://stockora-9xwj.vercel.app', // Your dashboard URL
-  'https://stockora.vercel.app', // Alternative Vercel URL
-  'https://stockora-frontend.vercel.app', // Another possible Vercel URL
   'https://stockora-5tzektwis-tauhidshaikhsas-gmailcoms-projects.vercel.app', // Current deployment URL
   'http://localhost:5173', // Local development
   'http://localhost:5174', // Local dashboard
   'http://localhost:3000', // Alternative local development
   'http://localhost:3001', // Another local development port
-  'https://stockora-dashboard.vercel.app', // Dashboard URL
-  'https://stockora-dashboard-t1rz.vercel.app', // Dashboard URL with subdomain
-  // Add any additional Vercel domains that might be used
-  'https://stockora-frontend-t1rz.vercel.app',
-  'https://stockora-dashboard-frontend.vercel.app',
 ];
 
 // Filter out undefined values

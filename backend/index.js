@@ -28,7 +28,8 @@ const dashboardurl = process.env.VITE_DASHBOARD_URL;
 const allowedOrigins = [
   frontend,
   dashboardurl,
-  'https://stockora-5tzektwis-tauhidshaikhsas-gmailcoms-projects.vercel.app', // Current deployment URL
+  'https://stockora-5tzektwis-tauhidshaikhsas-gmailcoms-projects.vercel.app', // Current frontend deployment URL
+  'https://stockora-t1rz.vercel.app', // Current dashboard deployment URL
   'http://localhost:5173', // Local development
   'http://localhost:5174', // Local dashboard
   'http://localhost:3000', // Alternative local development

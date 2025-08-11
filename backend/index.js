@@ -33,6 +33,7 @@ const allowedOrigins = [
   'https://stockora-9xwj.vercel.app', // Your dashboard URL
   'https://stockora.vercel.app', // Alternative Vercel URL
   'https://stockora-frontend.vercel.app', // Another possible Vercel URL
+  'https://stockora-5tzektwis-tauhidshaikhsas-gmailcoms-projects.vercel.app', // Current deployment URL
   'http://localhost:5173', // Local development
   'http://localhost:5174', // Local dashboard
   'http://localhost:3000', // Alternative local development
@@ -59,10 +60,17 @@ app.use(cors({
     console.log('Allowed origins:', validOrigins);
     console.log('Environment variables - frontend:', frontend, 'dashboardurl:', dashboardurl);
     
+    // Check if origin is in the allowed list
     if (validOrigins.indexOf(origin) !== -1) {
       console.log('CORS allowed for origin:', origin);
       callback(null, true);
-    } else {
+    } 
+    // Allow any Vercel deployment URL that contains 'stockora'
+    else if (origin.includes('vercel.app') && origin.includes('stockora')) {
+      console.log('CORS allowed for Vercel stockora deployment:', origin);
+      callback(null, true);
+    }
+    else {
       console.log('CORS blocked origin:', origin);
       console.log('This origin is not in the allowed list. Please add it to allowedOrigins array.');
       callback(new Error('Not allowed by CORS'));

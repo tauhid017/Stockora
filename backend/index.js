@@ -28,6 +28,7 @@ const dashboardurl = process.env.VITE_DASHBOARD_URL;
 const allowedOrigins = [
   frontend,
   dashboardurl,
+  'https://stockora-n8l5.vercel.app', // Current Vercel frontend/dashboard URL
   'https://stockora-t1rz.vercel.app', // Your Vercel frontend URL
   'https://stockora-9xwj.vercel.app', // Your dashboard URL
   'https://stockora.vercel.app', // Alternative Vercel URL

@@ -3,7 +3,7 @@ import logo from "../../assets/stockora.png";
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import './Signup.css'
-const dashboardurl = import.meta.env.VITE_DASHBOARD_URL || 'https://stockora-9xwj.vercel.app';
+const dashboardurl = import.meta.env.VITE_DASHBOARD_URL || 'https://stockora-n8l5.vercel.app';
 
 function Signup() {
     const [username, setUsername] = useState('');

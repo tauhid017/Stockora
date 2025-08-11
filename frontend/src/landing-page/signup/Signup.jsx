@@ -113,7 +113,7 @@ function Signup() {
             </div>
             
             <div className="signup-image-container">
-                <img src="/src/assets/stockora.png" alt="Stockora Trading" className="signup-image" />
+                <img src={logo} alt="Stockora Trading" className="signup-image" />
                 <div className="image-overlay">
                     
                     <h3>Start Your Trading Journey</h3>

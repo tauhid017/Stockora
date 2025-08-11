@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // Create the context
 const AuthContext = createContext();
-const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://stockora.onrender.com';
+const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://stockora-1.onrender.com';
 
 
 
@@ -43,14 +43,17 @@ export const AuthProvider = ({ children }) => {
   const register = async (username, email, password) => {
     try {
       setError('');
+      console.log('Attempting registration with:', { username, email, backendUrl });
       const response = await axios.post(`${backendUrl}/register`, {
         username,
         email,
         password
       });
+      console.log('Registration successful:', response.data);
       setCurrentUser(response.data.user);
       return response.data;
     } catch (error) {
+      console.error('Registration error:', error.response?.data || error.message);
       setError(error.response?.data?.error || 'Registration failed');
       throw error;
     }
@@ -60,13 +63,16 @@ export const AuthProvider = ({ children }) => {
   const login = async (username, password) => {
     try {
       setError('');
+      console.log('Attempting login with:', { username, backendUrl });
       const response = await axios.post(`${backendUrl}/login`, {
         username,
         password
       });
+      console.log('Login successful:', response.data);
       setCurrentUser(response.data.user);
       return response.data;
     } catch (error) {
+      console.error('Login error:', error.response?.data || error.message);
       setError(error.response?.data?.error || 'Login failed');
       throw error;
     }

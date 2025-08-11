@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import './Login.css';
+import logo from '../../assets/stockora.png';
+
 const dashboardurl = import.meta.env.VITE_DASHBOARD_URL || 'https://stockora-9xwj.vercel.app';
 function Login() {
     
@@ -81,7 +83,7 @@ function Login() {
             </div>
             
             <div className="login-image-container">
-                <img src="/src/assets/stockora.png" alt="Stockora Trading" className="login-image" />
+                <img src={logo} alt="Stockora Trading" className="login-image" />
                 <div className="image-overlay">
                     <h3>Access Your Portfolio</h3>
                     <p>Log in to manage your investments and track your performance</p>
